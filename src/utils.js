@@ -15,8 +15,11 @@ async function checkBalance(provider, address) {
   return balance;
 }
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 module.exports = {
   displayHeader,
   checkBalance,
   RPC_URL,
+  delay,
 };
