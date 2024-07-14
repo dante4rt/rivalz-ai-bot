@@ -102,7 +102,6 @@ async function main() {
 
           const contract = createContract(wallet, CONTRACT_ADDRESS);
           await claimFragmentz(contract, numClaims);
-          await delay(5000);
         }
       } else {
         console.log(

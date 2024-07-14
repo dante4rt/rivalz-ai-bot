@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { delay } = require('./utils');
 
 async function claimFragmentz(contract, numClaims) {
   for (let i = 0; i < numClaims; i++) {
@@ -21,6 +22,7 @@ async function claimFragmentz(contract, numClaims) {
           }`.green
         );
       }
+      await delay(5000);
     } catch (error) {
       console.log(
         `[ ${moment().format('HH:mm:ss')} ] Error claiming Fragmentz: ${
