@@ -168,11 +168,11 @@ async function main() {
           error.message
         }`.red
       );
+    } finally {
+      console.log('All tasks completed!'.green);
+      console.log('Subscribe: https://t.me/HappyCuanAirdrop'.green);
     }
   }
-
-  console.log('All tasks completed!'.green);
-  console.log('Subscribe: https://t.me/HappyCuanAirdrop'.green);
 }
 
 main();
