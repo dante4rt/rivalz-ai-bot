@@ -71,9 +71,13 @@ npm start
    - **One-time Claim**: Enter `1` to claim once.
    - **Recurring Claim**: Enter `2` to perform an initial claim and set up a recurring job that runs every 12 hours.
 
-### Recurring Claim Feature
+## Donations
 
-If you choose the recurring claim option, the bot will perform the initial claim immediately and then automatically claim Fragmentz every 12 hours. This is achieved using the `cron` package, which schedules the recurring jobs.
+If you would like to support the development of this project, you can make a donation using the following addresses:
+
+- **Solana**: `GLQMG8j23ookY8Af1uLUg4CQzuQYhXcx56rkpZkyiJvP`
+- **EVM**: `0x960EDa0D16f4D70df60629117ad6e5F1E13B8F44`
+- **BTC**: `bc1p9za9ctgwwvc7amdng8gvrjpwhnhnwaxzj3nfv07szqwrsrudfh6qvvxrj8`
 
 ## License
 
