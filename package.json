@@ -1,6 +1,6 @@
 {
   "name": "rivalz-ai-bot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A bot for interacting with the Rivalz Fragmentz claimer using Ethereum wallets.",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "Dante4rt",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.7.2",
     "colors": "^1.4.0",

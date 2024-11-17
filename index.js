@@ -207,7 +207,18 @@ async function main() {
         }`.red
       );
     } finally {
-      console.log('\nAll tasks completed!'.green);
+      if (action === '1' && claimOption === '2') {
+        console.log(
+          '\nRecurring claim is set up and running every 12 hours.'.green
+        );
+        console.log('Bot is now running in idle mode.'.green);
+      } else if (action === '1' && claimOption === '1') {
+        console.log('\nOne-time claim completed.'.green);
+      } else if (action === '0') {
+        console.log('\nBalance check completed.'.green);
+      } else {
+        console.log('\nExiting the bot. See you next time!'.green);
+      }
       console.log('Subscribe: https://t.me/HappyCuanAirdrop'.green);
     }
   }
