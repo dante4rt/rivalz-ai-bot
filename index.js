@@ -1,6 +1,7 @@
 require('colors');
 const fs = require('fs');
 const readlineSync = require('readline-sync');
+const inquirer = require('inquirer');
 const { displayHeader, checkBalance } = require('./src/utils');
 const { createWallet, createContract } = require('./src/wallet');
 const { claimFragmentz } = require('./src/claim');
@@ -8,7 +9,9 @@ const { RPC_URL } = require('./src/utils');
 const { JsonRpcProvider, ethers } = require('ethers');
 const moment = require('moment');
 const { CronJob } = require('cron');
-const CONTRACT_ADDRESS = '0xeBBa6Ffff611b7530b57Ed07569E9695B98e6c82';
+const CONTRACT_ADDRESS = '0xF0a66d18b46D4D5dd9947914ab3B2DDbdC19C2C0';
+
+let recurringSettings = {};
 
 async function claimProcess(seedPhrasesOrKeys, method, provider, numClaims) {
   for (const keyOrPhrase of seedPhrasesOrKeys) {
@@ -64,9 +67,18 @@ async function main() {
   const provider = new JsonRpcProvider(RPC_URL);
 
   while (true) {
-    const action = readlineSync.question(
-      'Enter 0 to check balance, 1 to claim Fragmentz, or 2 to exit: '
-    );
+    const { action } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'Select an option:',
+        choices: [
+          { name: 'Check balance', value: '0' },
+          { name: 'Claim Fragmentz', value: '1' },
+          { name: 'Exit', value: '2' },
+        ],
+      },
+    ]);
 
     if (action === '2') {
       console.log('Exiting...'.cyan);
@@ -99,41 +111,64 @@ async function main() {
           );
         }
       } else if (action === '1') {
-        const claimOption = readlineSync.question(
-          'Enter 1 for one-time claim, 2 for 12 hours recurring claim: '
-        );
+        let claimOption, method, seedPhrasesOrKeys;
 
-        const method = readlineSync.question(
-          'Enter 0 to use mnemonics, 1 to use private keys: '
-        );
-
-        let seedPhrasesOrKeys;
-        if (method === '0') {
-          seedPhrasesOrKeys = JSON.parse(
-            fs.readFileSync('accounts.json', 'utf-8')
-          );
-          if (
-            !Array.isArray(seedPhrasesOrKeys) ||
-            seedPhrasesOrKeys.length === 0
-          ) {
-            throw new Error(
-              'accounts.json is not set correctly or is empty'.red
-            );
-          }
-        } else if (method === '1') {
-          seedPhrasesOrKeys = JSON.parse(
-            fs.readFileSync('privateKeys.json', 'utf-8')
-          );
-          if (
-            !Array.isArray(seedPhrasesOrKeys) ||
-            seedPhrasesOrKeys.length === 0
-          ) {
-            throw new Error(
-              'privateKeys.json is not set correctly or is empty'.red
-            );
-          }
+        if (recurringSettings.claimOption === '2') {
+          claimOption = '2';
+          method = recurringSettings.method;
+          seedPhrasesOrKeys = recurringSettings.seedPhrasesOrKeys;
         } else {
-          throw new Error('Invalid input method selected'.red);
+          ({ claimOption } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'claimOption',
+              message: 'Select claim type:',
+              choices: [
+                { name: 'One-time claim', value: '1' },
+                { name: '12 hours recurring claim', value: '2' },
+              ],
+            },
+          ]));
+
+          ({ method } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'method',
+              message: 'Select input method:',
+              choices: [
+                { name: 'Use mnemonics', value: '0' },
+                { name: 'Use private keys', value: '1' },
+              ],
+            },
+          ]));
+
+          if (method === '0') {
+            seedPhrasesOrKeys = JSON.parse(
+              fs.readFileSync('accounts.json', 'utf-8')
+            );
+            if (
+              !Array.isArray(seedPhrasesOrKeys) ||
+              seedPhrasesOrKeys.length === 0
+            ) {
+              throw new Error(
+                'accounts.json is not set correctly or is empty'.red
+              );
+            }
+          } else if (method === '1') {
+            seedPhrasesOrKeys = JSON.parse(
+              fs.readFileSync('privateKeys.json', 'utf-8')
+            );
+            if (
+              !Array.isArray(seedPhrasesOrKeys) ||
+              seedPhrasesOrKeys.length === 0
+            ) {
+              throw new Error(
+                'privateKeys.json is not set correctly or is empty'.red
+              );
+            }
+          } else {
+            throw new Error('Invalid input method selected'.red);
+          }
         }
 
         const numClaims = readlineSync.questionInt(
@@ -143,9 +178,10 @@ async function main() {
         console.log('');
 
         await claimProcess(seedPhrasesOrKeys, method, provider, numClaims);
-        console.log('Initial claim completed.'.green);
+        console.log('\nInitial claim completed.'.green);
 
         if (claimOption === '2') {
+          recurringSettings = { claimOption, method, seedPhrasesOrKeys };
           await setupRecurringClaim(
             seedPhrasesOrKeys,
             method,
