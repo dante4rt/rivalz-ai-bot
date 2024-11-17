@@ -140,6 +140,8 @@ async function main() {
           'How many Fragmentz do you want to claim? '
         );
 
+        console.log('');
+
         await claimProcess(seedPhrasesOrKeys, method, provider, numClaims);
         console.log('Initial claim completed.'.green);
 
@@ -169,7 +171,7 @@ async function main() {
         }`.red
       );
     } finally {
-      console.log('All tasks completed!'.green);
+      console.log('\nAll tasks completed!'.green);
       console.log('Subscribe: https://t.me/HappyCuanAirdrop'.green);
     }
   }
