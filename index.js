@@ -23,13 +23,14 @@ async function claimProcess(seedPhrasesOrKeys, method, provider, numClaims) {
     }
 
     const senderAddress = wallet.address;
-    console.log(`Processing transactions for address: ${senderAddress}`.cyan);
+    console.log(`\nProcessing transactions for address: ${senderAddress}`.cyan);
 
     const contract = createContract(wallet, CONTRACT_ADDRESS);
     try {
       await claimFragmentz(contract, numClaims);
       console.log(
-        `Successfully claimed ${numClaims} Fragmentz for ${senderAddress}`.green
+        `\nSuccessfully claimed ${numClaims} Fragmentz for ${senderAddress}`
+          .green
       );
     } catch (error) {
       console.log(
@@ -86,6 +87,7 @@ async function main() {
     }
 
     try {
+      let claimOption = null;
       if (action === '0') {
         const privateKeys = JSON.parse(
           fs.readFileSync('privateKeys.json', 'utf-8')
@@ -111,7 +113,7 @@ async function main() {
           );
         }
       } else if (action === '1') {
-        let claimOption, method, seedPhrasesOrKeys;
+        let method, seedPhrasesOrKeys;
 
         if (recurringSettings.claimOption === '2') {
           claimOption = '2';
@@ -194,11 +196,6 @@ async function main() {
           );
           break;
         }
-      } else {
-        console.log(
-          'Invalid input. Please enter 0 to check balance, 1 to claim Fragmentz, or 2 to exit.'
-            .red
-        );
       }
     } catch (error) {
       console.log(
@@ -206,20 +203,6 @@ async function main() {
           error.message
         }`.red
       );
-    } finally {
-      if (action === '1' && claimOption === '2') {
-        console.log(
-          '\nRecurring claim is set up and running every 12 hours.'.green
-        );
-        console.log('Bot is now running in idle mode.'.green);
-      } else if (action === '1' && claimOption === '1') {
-        console.log('\nOne-time claim completed.'.green);
-      } else if (action === '0') {
-        console.log('\nBalance check completed.'.green);
-      } else {
-        console.log('\nExiting the bot. See you next time!'.green);
-      }
-      console.log('Subscribe: https://t.me/HappyCuanAirdrop'.green);
     }
   }
 }
